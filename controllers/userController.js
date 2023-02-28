@@ -4,7 +4,7 @@ const { ObjectId } = require('mongoose').Types;
 module.exports = {
     getAllUsers(req, res) {
         User.find()
-            .populate({ path: 'friends' })
+            .populate({path:'friends'})
             .populate({ path: 'thoughts' })
             .then(users => {
                 return res.json(users)
