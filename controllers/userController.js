@@ -4,7 +4,8 @@ const { ObjectId } = require('mongoose').Types;
 module.exports = {
     getAllUsers(req, res) {
         User.find()
-        .populate({path: 'thoughts'})
+            .populate({ path: 'friends' })
+            .populate({ path: 'thoughts' })
             .then(users => {
                 return res.json(users)
             }).catch(err => {
@@ -14,6 +15,8 @@ module.exports = {
     },
     getUserById(req, res) {
         User.findById(req.params.userId)
+            .populate({ path: 'friends' })
+            .populate({ path: 'thoughts' })
             .then(user => {
                 if (!user) {
                     res.status(404).json({ message: 'No user with this Id' })
@@ -47,11 +50,11 @@ module.exports = {
     deleteUser(req, res) {
         User.findOneAndRemove(req.params.userId)
             .then(user => {
-                if(!user){
-                    res.status(400).json({ message: 'No user with such Id'})
+                if (!user) {
+                    res.status(400).json({ message: 'No user with such Id' })
                 } else {
-                    Thought.deleteMany({_id: {$in: user.thoughts}})
-                    .then(() => res.json({message: 'User and their thoughts successfully deleted'}))
+                    Thought.deleteMany({ _id: { $in: user.thoughts } })
+                        .then(() => res.json({ message: 'User and their thoughts successfully deleted' }))
                 }
             })
             .catch(err => {
